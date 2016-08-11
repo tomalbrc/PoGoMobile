@@ -82,3 +82,43 @@ extension ViewController: PGoAuthDelegate, PGoApiDelegate {
     }
 }
 
+
+
+extension ViewController: MKMapViewDelegate {
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        let lbl = UILabel()
+        lbl.text = annotation.subtitle!
+        print("XLX: \(annotation.subtitle!)")
+        lbl.font = UIFont.systemFontOfSize(13)
+        
+        let v = MKAnnotationView()
+        v.leftCalloutAccessoryView = UIButton(type: .InfoDark)
+        v.rightCalloutAccessoryView = UIButton(type: .ContactAdd)
+        v.image = UIImage(named: "smile")
+        v.canShowCallout = true
+        v.detailCalloutAccessoryView = lbl
+        
+        print("called viewForAnnotation")
+        
+        return v
+    }
+    
+    func mapView(mapView: MKMapView, didAddAnnotationViews views: [MKAnnotationView]) {
+        var delay = 0.00
+        
+        for aV in views {
+            let endFrame = aV.frame;
+            
+            aV.frame = CGRectMake(aV.frame.origin.x, aV.frame.origin.y - 430.0, aV.frame.size.width, aV.frame.size.height);
+            delay = delay + 0.01;
+            
+            UIView.beginAnimations(nil, context: nil)
+            UIView.setAnimationDelay(delay)
+            UIView.setAnimationDuration(0.45)
+            UIView.setAnimationCurve(.EaseInOut)
+            aV.frame = endFrame
+            UIView.commitAnimations()
+        }
+    }
+}

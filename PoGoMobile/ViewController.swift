@@ -1,9 +1,9 @@
 //
-//  ViewController.swift
-//  PGoApi
+//  ViewControllerExtension.swift
+//  PoGoMobile
 //
-//  Created by Luke Sapan on 08/02/2016.
-//  Copyright (c) 2016 Luke Sapan. All rights reserved.
+//  Created by Tom Albrecht on 10.08.16.
+//  Copyright © 2016 Tom Albrecht. All rights reserved.
 //
 
 import UIKit
@@ -18,7 +18,6 @@ class ViewController: UIViewController {
     
     var isWalking = false
     
-    
     var auth: PtcOAuth!
     
     var location = CLLocation(coordinate: CLLocationCoordinate2D(latitude: 37.331729, longitude: -122.028834), altitude: 1.0391204, horizontalAccuracy: 1.0, verticalAccuracy: 1.0, timestamp: NSDate())
@@ -26,9 +25,7 @@ class ViewController: UIViewController {
     var foundForts = Array<Pogoprotos.Map.Fort.FortData>()
     var lastEncounteredPokemon: Pogoprotos.Map.Pokemon.WildPokemon?
     var lastSelectedFort: Pogoprotos.Map.Fort.FortData?
-}
-
-extension ViewController {
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -36,31 +33,10 @@ extension ViewController {
         auth.delegate = self
         auth.login(withUsername: "", withPassword: "")
         
-        /// Google auth
-        // var a = GPSOAuth()
-        // a.login(withUsername: "", withPassword: "")
-        
-        let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-        
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = location.coordinate
-        annotation.title = "Initial position"
-        
-        addAnnotation(location.coordinate, title: "Initial position", subtitle: nil)
-        
-        mapView?.region = MKCoordinateRegion(center: location.coordinate, span: span)
-        mapView?.addAnnotation(annotation)
-        
+        mapView?.region = MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+        mapView?.addAnnotation(location.coordinate, title: "Initial position", type: .Player, userData: nil)
     }
     
-    
-    func addAnnotation(coordinate: CLLocationCoordinate2D, title: String?, subtitle: String?) {
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = coordinate
-        annotation.title = title
-        annotation.subtitle = subtitle
-        mapView?.addAnnotation(annotation)
-    }
     
     
     @IBAction func getPlayer(sender: AnyObject) {
@@ -159,7 +135,7 @@ extension ViewController {
             self.updateLocation()
             
             // DEBUG
-            addAnnotation(location.coordinate, title: "\(location.coordinate.latitude), \(location.coordinate.longitude)", subtitle: "DEBUG | WALKED HERE")
+            mapView?.addAnnotation(location.coordinate, title: "Walk step", type: .Player, userData: nil)
             
             delayClosure(1.0) {
                 self.stepWithStepAmount(stepAmount, bearing: bearing, totalDistance: totalDistance, walkedDistance: walkedDistance+stepAmount)
@@ -170,10 +146,10 @@ extension ViewController {
     
     
     
-    func encounterPokemon(pokeWild: Pogoprotos.Map.Pokemon.MapPokemon) {
+    func encounterPokemon(mapPokemon: Pogoprotos.Map.Pokemon.MapPokemon) {
         let request = PGoApiRequest(auth: auth)
-        request.setLocation(location.coordinate.latitude, longitude: location.coordinate.longitude, altitude: location.altitude)
-        request.encounterPokemon(pokeWild.encounterId, spawnPointId: pokeWild.spawnPointId)
+        request.setLocation(mapPokemon.latitude, longitude: mapPokemon.longitude, altitude: location.altitude)
+        request.encounterPokemon(mapPokemon.encounterId, spawnPointId: mapPokemon.spawnPointId)
         request.makeRequest(.EncounterPokemon, delegate: self)
     }
     
@@ -263,10 +239,12 @@ extension ViewController {
         }
         
         for pkmn in foundPokemons {
-            addAnnotation(CLLocationCoordinate2D(latitude: pkmn.latitude, longitude: pkmn.longitude), title: pkmn.pokemonId.toString(), subtitle: nil)
+            let coord = CLLocationCoordinate2D(latitude: pkmn.latitude, longitude: pkmn.longitude)
+            mapView?.addAnnotation(coord, title: pkmn.pokemonId.toString().capitalizedString, type: .Pokemon, userData: pkmn)
         }
         for fort in foundForts {
-            addAnnotation(CLLocationCoordinate2D(latitude: fort.latitude, longitude: fort.longitude), title: fort.hasOwnedByTeam ? "Gym" : "PokeStop", subtitle: fort.id)
+            let coord = CLLocationCoordinate2D(latitude: fort.latitude, longitude: fort.longitude)
+            mapView?.addAnnotation(coord, title: "Fort", type: .Fort, userData: fort)
         }
         
         

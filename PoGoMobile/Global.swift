@@ -31,7 +31,7 @@ func locationWithBearing(bearing:Double, distanceMeters:Double, origin:CLLocatio
 
 
 
-
+// TODO: um
 class ClientInformation {
     var playerData: Pogoprotos.Data.PlayerData?
     var playerStats: Pogoprotos.Data.Player.PlayerStats?

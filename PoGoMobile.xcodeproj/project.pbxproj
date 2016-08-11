@@ -17,6 +17,8 @@
 		9ABF9C7E1D51E47B0073FF5C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9ABF9C7C1D51E47B0073FF5C /* Main.storyboard */; };
 		9ABF9C801D51E47B0073FF5C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9ABF9C7F1D51E47B0073FF5C /* Assets.xcassets */; };
 		9ABF9C831D51E47B0073FF5C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9ABF9C811D51E47B0073FF5C /* LaunchScreen.storyboard */; };
+		9AEC268A1D5D212700D4E6E5 /* MapAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AEC26891D5D212700D4E6E5 /* MapAnnotation.swift */; };
+		9AEC268C1D5D23D000D4E6E5 /* MKMapViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AEC268B1D5D23D000D4E6E5 /* MKMapViewExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,8 @@
 		9ABF9C7F1D51E47B0073FF5C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9ABF9C821D51E47B0073FF5C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9ABF9C841D51E47B0073FF5C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9AEC26891D5D212700D4E6E5 /* MapAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapAnnotation.swift; sourceTree = "<group>"; };
+		9AEC268B1D5D23D000D4E6E5 /* MKMapViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MKMapViewExtension.swift; sourceTree = "<group>"; };
 		A877DDD106AE46AE39D65F31 /* Pods_PoGoMobile.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PoGoMobile.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF12BD7B2A4AB62B4DE07984 /* Pods-PoGoMobile.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoGoMobile.release.xcconfig"; path = "Pods/Target Support Files/Pods-PoGoMobile/Pods-PoGoMobile.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -82,15 +86,41 @@
 			isa = PBXGroup;
 			children = (
 				9ABF9C781D51E47B0073FF5C /* AppDelegate.swift */,
+				9AEC268E1D5D243400D4E6E5 /* Map */,
+				9AEC268D1D5D242100D4E6E5 /* ViewController */,
+				9AB4F0641D5AC5E400C5C7D2 /* Global.swift */,
+				9AEC268F1D5D244E00D4E6E5 /* Supporting Files */,
+			);
+			path = PoGoMobile;
+			sourceTree = "<group>";
+		};
+		9AEC268D1D5D242100D4E6E5 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
 				9ABF9C7A1D51E47B0073FF5C /* ViewController.swift */,
 				9A6EB2191D5B390C00AEB39E /* ViewControllerExtension.swift */,
+			);
+			name = ViewController;
+			sourceTree = "<group>";
+		};
+		9AEC268E1D5D243400D4E6E5 /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				9AEC268B1D5D23D000D4E6E5 /* MKMapViewExtension.swift */,
+				9AEC26891D5D212700D4E6E5 /* MapAnnotation.swift */,
+			);
+			name = Map;
+			sourceTree = "<group>";
+		};
+		9AEC268F1D5D244E00D4E6E5 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
 				9ABF9C7C1D51E47B0073FF5C /* Main.storyboard */,
 				9ABF9C7F1D51E47B0073FF5C /* Assets.xcassets */,
 				9ABF9C811D51E47B0073FF5C /* LaunchScreen.storyboard */,
 				9ABF9C841D51E47B0073FF5C /* Info.plist */,
-				9AB4F0641D5AC5E400C5C7D2 /* Global.swift */,
 			);
-			path = PoGoMobile;
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		D4FA17815CD9EBECBA92BBB6 /* Pods */ = {
@@ -225,7 +255,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				9A6EB21A1D5B390C00AEB39E /* ViewControllerExtension.swift in Sources */,
+				9AEC268A1D5D212700D4E6E5 /* MapAnnotation.swift in Sources */,
 				9ABF9C7B1D51E47B0073FF5C /* ViewController.swift in Sources */,
+				9AEC268C1D5D23D000D4E6E5 /* MKMapViewExtension.swift in Sources */,
 				9ABF9C791D51E47B0073FF5C /* AppDelegate.swift in Sources */,
 				9AB4F0651D5AC5E400C5C7D2 /* Global.swift in Sources */,
 			);
