@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="dPj-Gt-Xyn">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="PoGoMobile" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="sGm-qk-TxK">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                            </mapView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="fort lbl" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iqX-3M-0g9">
+                                <rect key="frame" x="8" y="527" width="576" height="21"/>
+                                <color key="backgroundColor" red="0.98192038782596969" green="1" blue="0.95937670836324607" alpha="0.75002693965517242" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="jBU-6b-q2H"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zpd-qx-6Hk">
+                                <rect key="frame" x="16" y="80" width="568" height="90"/>
+                                <color key="backgroundColor" red="0.93352384145012102" green="1" blue="0.9447576962603319" alpha="0.75026939655172409" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="90" id="Zew-qG-8PS"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="iqX-3M-0g9" secondAttribute="trailing" constant="16" id="8KS-VJ-agY"/>
+                            <constraint firstItem="sGm-qk-TxK" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="BBq-SZ-O0a"/>
+                            <constraint firstItem="iqX-3M-0g9" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="8" id="CcI-K3-P3L"/>
+                            <constraint firstItem="sGm-qk-TxK" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="KOp-s7-CdK"/>
+                            <constraint firstAttribute="trailing" secondItem="zpd-qx-6Hk" secondAttribute="trailing" constant="16" id="QOc-6G-vS8"/>
+                            <constraint firstItem="zpd-qx-6Hk" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="16" id="Qa6-9Z-7oZ"/>
+                            <constraint firstAttribute="bottom" secondItem="sGm-qk-TxK" secondAttribute="bottom" id="SJ6-H2-XOi"/>
+                            <constraint firstItem="zpd-qx-6Hk" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="16" id="Xum-2E-fMh"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="iqX-3M-0g9" secondAttribute="bottom" constant="8" id="aXE-Tv-fb4"/>
+                            <constraint firstAttribute="trailing" secondItem="sGm-qk-TxK" secondAttribute="trailing" id="dqh-CP-Tci"/>
+                        </constraints>
+                    </view>
+                    <toolbarItems>
+                        <barButtonItem title="Inventory" id="BXA-Vx-IHx">
+                            <connections>
+                                <action selector="getInventory:" destination="BYZ-38-t0r" id="cQ6-nf-w4V"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="uwh-zY-Bi3"/>
+                        <barButtonItem title="Catch" id="x0v-A9-HER">
+                            <connections>
+                                <action selector="tryCatch:" destination="BYZ-38-t0r" id="IEB-Va-lT6"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="lov-LC-Wac"/>
+                        <barButtonItem title="Walk to fort" id="37g-7C-6ZE">
+                            <connections>
+                                <action selector="walkToFort:" destination="BYZ-38-t0r" id="1wP-Vs-j0u"/>
+                            </connections>
+                        </barButtonItem>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" id="92Y-2Q-bTQ">
+                        <barButtonItem key="leftBarButtonItem" systemItem="refresh" id="X0c-KW-kDt">
+                            <connections>
+                                <action selector="getMapObjects:" destination="BYZ-38-t0r" id="1Kh-uU-TqM"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" id="Fs7-uF-kCe">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="gUe-NX-Jpt">
+                                <rect key="frame" x="486" y="5" width="94" height="33"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Get Player"/>
+                                <connections>
+                                    <action selector="getPlayer:" destination="BYZ-38-t0r" eventType="touchUpInside" id="X4Q-ae-88s"/>
+                                </connections>
+                            </button>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="fortLbl" destination="iqX-3M-0g9" id="4y4-PV-e2G"/>
+                        <outlet property="mapView" destination="sGm-qk-TxK" id="DF8-ls-wAk"/>
+                        <outlet property="usernameLbl" destination="zpd-qx-6Hk" id="wKi-Hf-TFp"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="154" y="665"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Jaf-Hj-wJZ">
+            <objects>
+                <navigationController toolbarHidden="NO" id="dPj-Gt-Xyn" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="qiY-cb-Yqe">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="vCE-6O-yc2">
+                        <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="1M8-xa-NuI"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Usn-jO-sTr" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-596" y="665"/>
+        </scene>
+    </scenes>
+</document>
