@@ -86,10 +86,9 @@ extension ViewController: PGoAuthDelegate, PGoApiDelegate {
 
 extension ViewController: MKMapViewDelegate {
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
-        
+                
         let lbl = UILabel()
-        lbl.text = annotation.subtitle!
-        print("XLX: \(annotation.subtitle!)")
+        lbl.text = annotation.title!
         lbl.font = UIFont.systemFontOfSize(13)
         
         let v = MKAnnotationView()

@@ -12,7 +12,7 @@ import MapKit
 extension MKMapView {
     func addAnnotation(coordinate: CLLocationCoordinate2D, title: String?, type: MapAnnotationType, userData: AnyObject?) {
         let annotation = MapAnnotation(coordinate: coordinate, type: type)
-        annotation.title = title
+        annotation.customTitle = title
         annotation.userData = userData
         self.addAnnotation(annotation)
     }

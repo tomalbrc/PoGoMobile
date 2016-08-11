@@ -21,7 +21,7 @@ class MapAnnotation: NSObject, MKAnnotation {
     var coordinate: CLLocationCoordinate2D
     var type: MapAnnotationType
 
-    var title: String?
+    var customTitle: String?
     
     var userData: AnyObject?
     
