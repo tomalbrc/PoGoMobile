@@ -5,7 +5,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Map-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="PoGoMobile" customModuleProvider="target" sceneMemberID="viewController">
@@ -61,7 +61,7 @@
                     <toolbarItems>
                         <barButtonItem title="Inventory" id="BXA-Vx-IHx">
                             <connections>
-                                <action selector="getInventory:" destination="BYZ-38-t0r" id="cQ6-nf-w4V"/>
+                                <action selector="showInventoryMenu:" destination="BYZ-38-t0r" id="VcH-Cx-xPS"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="uwh-zY-Bi3"/>
@@ -70,28 +70,17 @@
                                 <action selector="tryCatch:" destination="BYZ-38-t0r" id="IEB-Va-lT6"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="lov-LC-Wac"/>
-                        <barButtonItem title="Walk to fort" id="37g-7C-6ZE">
-                            <connections>
-                                <action selector="walkToFort:" destination="BYZ-38-t0r" id="1wP-Vs-j0u"/>
-                            </connections>
-                        </barButtonItem>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" id="92Y-2Q-bTQ">
+                    <navigationItem key="navigationItem" title="Map" id="92Y-2Q-bTQ">
                         <barButtonItem key="leftBarButtonItem" systemItem="refresh" id="X0c-KW-kDt">
                             <connections>
                                 <action selector="getMapObjects:" destination="BYZ-38-t0r" id="1Kh-uU-TqM"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" id="Fs7-uF-kCe">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="gUe-NX-Jpt">
-                                <rect key="frame" x="486" y="5" width="94" height="33"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Get Player"/>
-                                <connections>
-                                    <action selector="getPlayer:" destination="BYZ-38-t0r" eventType="touchUpInside" id="X4Q-ae-88s"/>
-                                </connections>
-                            </button>
+                        <barButtonItem key="rightBarButtonItem" title="Get Player Data" id="a95-cy-iZo">
+                            <connections>
+                                <action selector="getPlayer:" destination="BYZ-38-t0r" id="AKc-xS-gOm"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
@@ -103,6 +92,37 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="154" y="665"/>
+        </scene>
+        <!--Inventory Table View Controller-->
+        <scene sceneID="vyU-mO-EsQ">
+            <objects>
+                <tableViewController storyboardIdentifier="InventoryTableViewController" id="LVo-ng-S5d" customClass="InventoryTableViewController" customModule="PoGoMobile" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="vIt-31-vo9">
+                        <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" id="Q8c-XN-g7W">
+                                <rect key="frame" x="0.0" y="28" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Q8c-XN-g7W" id="CWd-vM-mTc">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="LVo-ng-S5d" id="2LN-nk-ZdH"/>
+                            <outlet property="delegate" destination="LVo-ng-S5d" id="ix6-Jn-zj3"/>
+                        </connections>
+                    </tableView>
+                    <toolbarItems/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DWq-02-x05" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-66" y="1370"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Jaf-Hj-wJZ">

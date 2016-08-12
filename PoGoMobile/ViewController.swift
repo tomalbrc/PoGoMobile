@@ -18,26 +18,33 @@ class ViewController: UIViewController {
     
     var isWalking = false
     
-    var auth: PtcOAuth!
+    var auth: PtcOAuth?
     
     var location = CLLocation(coordinate: CLLocationCoordinate2D(latitude: 37.331729, longitude: -122.028834), altitude: 1.0391204, horizontalAccuracy: 1.0, verticalAccuracy: 1.0, timestamp: NSDate())
     var foundPokemons = Array<Pogoprotos.Map.Pokemon.MapPokemon>()
     var foundForts = Array<Pogoprotos.Map.Fort.FortData>()
     var lastEncounteredPokemon: Pogoprotos.Map.Pokemon.WildPokemon?
-    var lastSelectedFort: Pogoprotos.Map.Fort.FortData?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         auth = PtcOAuth()
-        auth.delegate = self
-        auth.login(withUsername: "", withPassword: "")
+        auth?.delegate = self
+        auth?.login(withUsername: "", withPassword: "")
         
         mapView?.region = MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
         mapView?.addAnnotation(location.coordinate, title: "Initial position", type: .Player, userData: nil)
     }
     
     
+    
+    @IBAction func showInventoryMenu(sender: AnyObject) {
+        if let inventoryVC = self.storyboard?.instantiateViewControllerWithIdentifier("InventoryTableViewController") as? InventoryTableViewController {
+            inventoryVC.location = location
+            inventoryVC.auth = auth
+            self.navigationController?.pushViewController(inventoryVC, animated: true)
+        }
+    }
     
     @IBAction func getPlayer(sender: AnyObject) {
         let request = PGoApiRequest(auth: auth)
@@ -55,15 +62,7 @@ class ViewController: UIViewController {
         request.makeRequest(.GetMapObjects, delegate: self)
     }
     
-    @IBAction func getInventory(sender: AnyObject) {
-        let request = PGoApiRequest(auth: auth)
-        request.setLocation(location.coordinate.latitude, longitude: location.coordinate.longitude, altitude: location.altitude)
-        request.getInventory()
-        request.makeRequest(.GetInventory, delegate: self)
-    }
     
-    
-    // Actually walks to the next fort available
     func updateLocation() {
         let request = PGoApiRequest(auth: auth)
         request.setLocation(location.coordinate.latitude, longitude: location.coordinate.longitude, altitude: location.altitude)
@@ -71,6 +70,7 @@ class ViewController: UIViewController {
         request.makeRequest(.PlayerUpdate, delegate: self)
     }
     
+    // TODO: make it an annotation thingy
     @IBAction func tryCatch(sender: AnyObject) {
         if (lastEncounteredPokemon != nil) {
             //let poke = encounteredPokemon!.pokemonData
@@ -87,43 +87,38 @@ class ViewController: UIViewController {
     }
     
     
-    @IBAction func walkToFort(sender: AnyObject) {
-        if (lastSelectedFort == nil && foundForts.count == 0) {
-            usernameLbl?.text = "No forts available! Tap \"Get MapObjects\" first"
-            return
-        } else if foundForts.count > 0 {
-            lastSelectedFort = foundForts.first
-            foundForts.removeFirst()
-        } else {return}
+    func walkToFort(sender: AnyObject) {
+        let lastSelectedFort = ((sender as? TAButton)?.userData as? MapAnnotation)?.userData as! Pogoprotos.Map.Fort.FortData
         
+        usernameLbl?.text = "Walking to \(lastSelectedFort.id)"
         
-        usernameLbl?.text = "Walking to \(lastSelectedFort!.id)"
-        
-        let difLat = lastSelectedFort!.latitude - location.coordinate.latitude
-        let difLon = lastSelectedFort!.longitude - location.coordinate.longitude
+        let difLat = lastSelectedFort.latitude - location.coordinate.latitude
+        let difLon = lastSelectedFort.longitude - location.coordinate.longitude
         //let distance = sqrt(pow(difLat,2)+pow(difLon,2))
         
-        let angle = atan2(difLon, difLat)
+        let bearing = atan2(difLon, difLat)
         
-        
-        let newLoc = CLLocation(coordinate: CLLocationCoordinate2D(latitude: lastSelectedFort!.latitude, longitude: lastSelectedFort!.longitude), altitude: location.altitude, horizontalAccuracy: 1.0, verticalAccuracy: 1.0, timestamp: NSDate())
+        let newLoc = CLLocation(coordinate: CLLocationCoordinate2D(latitude: lastSelectedFort.latitude, longitude: lastSelectedFort.longitude), altitude: location.altitude, horizontalAccuracy: 1.0, verticalAccuracy: 1.0, timestamp: NSDate())
         let distanceMeters = location.distanceFromLocation(newLoc)
         
         let walkSpeedInMS = 20.0 /* meters/s */
-        stepWithStepAmount(walkSpeedInMS, bearing: angle, totalDistance: distanceMeters, walkedDistance: 0)
-        fortLbl?.text = "Walking for \(ceil(distanceMeters/20.0)) seconds"
+        stepWithStepAmount(walkSpeedInMS, bearing: bearing, totalDistance: distanceMeters, walkedDistance: 0) {
+            self.spinFort(lastSelectedFort)
+        }
+        fortLbl?.text = "Walking for \(ceil((distanceMeters-walkSpeedInMS)/20.0)) seconds"
     }
-    func spinCurrentFort() {
+    
+    func spinFort(fort: Pogoprotos.Map.Fort.FortData) {
         let request = PGoApiRequest(auth: auth)
-        request.setLocation(lastSelectedFort!.latitude, longitude: lastSelectedFort!.longitude, altitude: location.altitude)
-        request.fortSearch(lastSelectedFort!.id, fortLatitude: lastSelectedFort!.latitude, fortLongitude: lastSelectedFort!.longitude)
+        request.setLocation(fort.latitude, longitude: fort.longitude, altitude: location.altitude)
+        request.fortSearch(fort.id, fortLatitude: fort.latitude, fortLongitude: fort.longitude)
         request.makeRequest(.FortSearch, delegate: self)
     }
     
-    func stepWithStepAmount(stepAmount: Double, bearing: Double, totalDistance: Double, walkedDistance: Double) {
+    func stepWithStepAmount(stepAmount: Double, bearing: Double, totalDistance: Double, walkedDistance: Double, completion: ()->()) {
         if walkedDistance+stepAmount >= totalDistance {
             isWalking = false
-            if (lastSelectedFort != nil) { self.spinCurrentFort() }
+            completion()
         } else {
             isWalking = true
             
@@ -138,7 +133,7 @@ class ViewController: UIViewController {
             mapView?.addAnnotation(location.coordinate, title: "Walk step", type: .Player, userData: nil)
             
             delayClosure(1.0) {
-                self.stepWithStepAmount(stepAmount, bearing: bearing, totalDistance: totalDistance, walkedDistance: walkedDistance+stepAmount)
+                self.stepWithStepAmount(stepAmount, bearing: bearing, totalDistance: totalDistance, walkedDistance: walkedDistance+stepAmount, completion: completion)
             }
         }
     }
@@ -168,41 +163,7 @@ class ViewController: UIViewController {
         }
     }
     
-    func handleInventory(data: Pogoprotos.Networking.Responses.GetInventoryResponse) {
-        clientInformation.inventoryItems = data.inventoryDelta.inventoryItems
-        for item in data.inventoryDelta.inventoryItems {
-            if item.inventoryItemData.hasPlayerStats {
-                clientInformation.playerStats = item.inventoryItemData.playerStats
-            }
-        }
-        
-        var incenseOrdinary = 0
-        var potions = 0
-        var superpotions = 0
-        var hyperpotions = 0
-        var maxpotions = 0
-        var pokeballs = 0
-        var superballs = 0
-        var ultraballs = 0
-        var razzberries = 0
-        var luckyeggs = 0
-        var pkmns = 0
-        for item in data.inventoryDelta.inventoryItems {
-            if item.inventoryItemData.hasItem && item.inventoryItemData.item.itemId == .ItemPokeBall { pokeballs = Int(item.inventoryItemData.item.count) }
-            else if item.inventoryItemData.hasItem && item.inventoryItemData.item.itemId == .ItemGreatBall { superballs = Int(item.inventoryItemData.item.count) }
-            else if item.inventoryItemData.hasItem && item.inventoryItemData.item.itemId == .ItemUltraBall { ultraballs = Int(item.inventoryItemData.item.count) }
-            else if item.inventoryItemData.hasItem && item.inventoryItemData.item.itemId == .ItemPotion { potions = Int(item.inventoryItemData.item.count) }
-            else if item.inventoryItemData.hasItem && item.inventoryItemData.item.itemId == .ItemSuperPotion { superpotions = Int(item.inventoryItemData.item.count) }
-            else if item.inventoryItemData.hasItem && item.inventoryItemData.item.itemId == .ItemHyperPotion { hyperpotions = Int(item.inventoryItemData.item.count) }
-            else if item.inventoryItemData.hasItem && item.inventoryItemData.item.itemId == .ItemMaxPotion { maxpotions = Int(item.inventoryItemData.item.count) }
-            else if item.inventoryItemData.hasItem && item.inventoryItemData.item.itemId == .ItemLuckyEgg { luckyeggs = Int(item.inventoryItemData.item.count) }
-            else if item.inventoryItemData.hasItem && item.inventoryItemData.item.itemId == .ItemRazzBerry { razzberries = Int(item.inventoryItemData.item.count) }
-            else if item.inventoryItemData.hasItem && item.inventoryItemData.item.itemId == .ItemIncenseOrdinary { incenseOrdinary = Int(item.inventoryItemData.item.count) }
-            else if item.inventoryItemData.hasPokemonData { pkmns += 1 }
-        }
-        
-        usernameLbl?.text = "Inventory:\n\(pokeballs)x Pokeballs | \(superballs)x Superballs | \(ultraballs)x Ultraballs\n\(potions)x Potions | \(superpotions)x SuperPotions | \(hyperpotions)x HyperPotions | \(maxpotions)x MaxPotions\n\(incenseOrdinary)x Normal Incense | \(luckyeggs)x Lucky Eggs | \(razzberries)x Razzberries\n\nPkmns: \(pkmns)"
-    }
+    
     
     func handleCatch(data: Pogoprotos.Networking.Responses.CatchPokemonResponse) {
         let r = data
@@ -222,33 +183,20 @@ class ViewController: UIViewController {
     }
     
     func handleMapObjects(data: Pogoprotos.Networking.Responses.GetMapObjectsResponse) {
-        let r = data
-        
         foundForts.removeAll()
         foundPokemons.removeAll()
-        
-        var i = 0
-        for cell in r.mapCells {
-            print("Run #\(i)")
-            print(cell)
-            
+        for cell in data.mapCells {
             foundPokemons.appendContentsOf(cell.catchablePokemons)
             foundForts.appendContentsOf(cell.forts)
-            
-            
-            i+=1
         }
         
         for annotation in mapView!.annotations {
             if let annotation = annotation as? MapAnnotation {
-                if annotation.type == .Pokemon {
-                    mapView?.removeAnnotation(annotation)
-                } else if annotation.type == .Fort {
+                if annotation.type == .Pokemon || annotation.type == .Fort {
                     mapView?.removeAnnotation(annotation)
                 }
             }
         }
-        
         
         for pkmn in foundPokemons {
             let coord = CLLocationCoordinate2D(latitude: pkmn.latitude, longitude: pkmn.longitude)
@@ -258,8 +206,6 @@ class ViewController: UIViewController {
             let coord = CLLocationCoordinate2D(latitude: fort.latitude, longitude: fort.longitude)
             mapView?.addAnnotation(coord, title: "Fort", type: .Fort, userData: fort)
         }
-        
-        
         
         usernameLbl?.text = "Found forts: \(foundForts.count)\nFound Pokemon: \(foundPokemons.count)"
     }

@@ -33,8 +33,8 @@ extension ViewController: PGoAuthDelegate, PGoApiDelegate {
         
         
         if (intent == .Login) {
-            auth.endpoint = "https://\((response.response as! Pogoprotos.Networking.Envelopes.ResponseEnvelope).apiUrl)/rpc"
-            print("New endpoint: \(auth.endpoint)")
+            auth?.endpoint = "https://\((response.response as! Pogoprotos.Networking.Envelopes.ResponseEnvelope).apiUrl)/rpc"
+            print("New endpoint: \(auth?.endpoint)")
             getPlayer(0)
         } else if (intent == .GetMapObjects) {
             handleMapObjects(response.subresponses[0] as! Pogoprotos.Networking.Responses.GetMapObjectsResponse)
@@ -47,29 +47,22 @@ extension ViewController: PGoAuthDelegate, PGoApiDelegate {
                 lastEncounteredPokemon = r.wildPokemon
             }
             
-        } else if intent == .GetInventory {
-            handleInventory(response.subresponses[0] as! Pogoprotos.Networking.Responses.GetInventoryResponse)
         } else if intent == .CatchPokemon {
             handleCatch(response.subresponses[0] as! Pogoprotos.Networking.Responses.CatchPokemonResponse)
         } else if intent == .PlayerUpdate {
-            print("Updated player data");
-            if let r = response.subresponses[0] as? Pogoprotos.Networking.Responses.PlayerUpdateResponse {
-                print(r)
-            }
+            print("Updated player position");
         } else if intent == .FortSearch {
             let r = response.subresponses.first as? Pogoprotos.Networking.Responses.FortSearchResponse
             if r!.result == .InCooldownPeriod {
                 usernameLbl?.text = "Fort still cooling down"
             } else if r!.result == .Success {
                 var str: String = ""
-                for it in r!.itemsAwarded {
-                    var istr = String(it.itemId)
-                    istr = istr.substringFromIndex(istr.rangeOfString(".Item")!.endIndex)
-                    str += "\(it.itemCount)x \(istr), "
+                for item in r!.itemsAwarded {
+                    let itemIDStr = item.itemId.toString()
+                    str += "\(item.itemCount)x \(itemIDStr), "
                 }
                 usernameLbl?.text = "@Spun Fort, EXP: \(r!.experienceAwarded)\n\(str)"
             }
-            
         }
     }
     
@@ -83,7 +76,6 @@ extension ViewController: PGoAuthDelegate, PGoApiDelegate {
 
 extension ViewController: MKMapViewDelegate {
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
-        
         if let annotation = annotation as? MapAnnotation {
             let lbl = UILabel()
             lbl.font = UIFont.systemFontOfSize(9)
@@ -95,14 +87,26 @@ extension ViewController: MKMapViewDelegate {
             }
             
             
-            let v = MKAnnotationView()
-            v.leftCalloutAccessoryView = UIButton(type: .InfoDark)
-            v.rightCalloutAccessoryView = UIButton(type: .ContactAdd)
-            v.image = UIImage(named: "smile")
-            v.canShowCallout = true
-            v.detailCalloutAccessoryView = lbl
+            let annotationView = MKAnnotationView()
+            if annotation.type == .Fort {
+                let btn = TAButton()
+                btn.frame = CGRectMake(0, 0, 50, 44)
+                btn.setImage(UIImage(named: "runner"), forState: .Normal)
+                btn.backgroundColor = UIColor(red: 25/1.0, green: 150/1.0, blue: 235/1.0, alpha: 1.0)
+                btn.addTarget(self, action: #selector(walkToFort), forControlEvents: .TouchUpInside)
+                btn.userData = annotation
+                annotationView.leftCalloutAccessoryView = btn
+            } else if annotation.type == .Pokemon {
+                
+            } else {
+                let btn = UIButton(type: .DetailDisclosure)
+                annotationView.rightCalloutAccessoryView = btn
+            }
+            annotationView.image = UIImage(named: "smile")
+            annotationView.canShowCallout = true
+            annotationView.detailCalloutAccessoryView = lbl
             
-            return v
+            return annotationView
         }
         return nil
     }
