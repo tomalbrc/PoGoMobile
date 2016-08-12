@@ -57,8 +57,7 @@ extension ViewController: PGoAuthDelegate, PGoApiDelegate {
                 print(r)
             }
         } else if intent == .FortSearch {
-            let r = response.subresponses[0] as? Pogoprotos.Networking.Responses.FortSearchResponse
-            print(r)
+            let r = response.subresponses.first as? Pogoprotos.Networking.Responses.FortSearchResponse
             if r!.result == .InCooldownPeriod {
                 usernameLbl?.text = "Fort still cooling down"
             } else if r!.result == .Success {
@@ -66,19 +65,17 @@ extension ViewController: PGoAuthDelegate, PGoApiDelegate {
                 for it in r!.itemsAwarded {
                     var istr = String(it.itemId)
                     istr = istr.substringFromIndex(istr.rangeOfString(".Item")!.endIndex)
-                    str += String(it.itemCount)+"x "+istr+", "
-                    
-                    
-                    
+                    str += "\(it.itemCount)x \(istr), "
                 }
-                usernameLbl?.text = "@FORT XP: \(r!.experienceAwarded)\n\(str)"
+                usernameLbl?.text = "@Spun Fort, EXP: \(r!.experienceAwarded)\n\(str)"
             }
             
         }
     }
     
     func didReceiveApiError(intent: PGoApiIntent, statusCode: Int?) {
-        print("API Error: \(statusCode)")
+        usernameLbl?.text = "API Error: \(statusCode)"
+        print(usernameLbl?.text)
     }
 }
 
@@ -86,22 +83,30 @@ extension ViewController: PGoAuthDelegate, PGoApiDelegate {
 
 extension ViewController: MKMapViewDelegate {
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
-                
-        let lbl = UILabel()
-        lbl.text = annotation.title!
-        lbl.font = UIFont.systemFontOfSize(13)
         
-        let v = MKAnnotationView()
-        v.leftCalloutAccessoryView = UIButton(type: .InfoDark)
-        v.rightCalloutAccessoryView = UIButton(type: .ContactAdd)
-        v.image = UIImage(named: "smile")
-        v.canShowCallout = true
-        v.detailCalloutAccessoryView = lbl
-        
-        print("called viewForAnnotation")
-        
-        return v
+        if let annotation = annotation as? MapAnnotation {
+            let lbl = UILabel()
+            lbl.font = UIFont.systemFontOfSize(9)
+            
+            if let pokemon = annotation.userData as? Pogoprotos.Map.Pokemon.MapPokemon {
+                lbl.text = pokemon.pokemonId.toString().capitalizedString
+            } else if let fort = annotation.userData as? Pogoprotos.Map.Fort.FortData {
+                lbl.text = fort.id
+            }
+            
+            
+            let v = MKAnnotationView()
+            v.leftCalloutAccessoryView = UIButton(type: .InfoDark)
+            v.rightCalloutAccessoryView = UIButton(type: .ContactAdd)
+            v.image = UIImage(named: "smile")
+            v.canShowCallout = true
+            v.detailCalloutAccessoryView = lbl
+            
+            return v
+        }
+        return nil
     }
+    
     
     func mapView(mapView: MKMapView, didAddAnnotationViews views: [MKAnnotationView]) {
         var delay = 0.00
@@ -114,7 +119,7 @@ extension ViewController: MKMapViewDelegate {
             
             UIView.beginAnimations(nil, context: nil)
             UIView.setAnimationDelay(delay)
-            UIView.setAnimationDuration(0.45)
+            UIView.setAnimationDuration(0.42)
             UIView.setAnimationCurve(.EaseInOut)
             aV.frame = endFrame
             UIView.commitAnimations()

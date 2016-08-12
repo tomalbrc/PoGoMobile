@@ -235,12 +235,24 @@ class ViewController: UIViewController {
             foundPokemons.appendContentsOf(cell.catchablePokemons)
             foundForts.appendContentsOf(cell.forts)
             
+            
             i+=1
         }
         
+        for annotation in mapView!.annotations {
+            if let annotation = annotation as? MapAnnotation {
+                if annotation.type == .Pokemon {
+                    mapView?.removeAnnotation(annotation)
+                } else if annotation.type == .Fort {
+                    mapView?.removeAnnotation(annotation)
+                }
+            }
+        }
+        
+        
         for pkmn in foundPokemons {
             let coord = CLLocationCoordinate2D(latitude: pkmn.latitude, longitude: pkmn.longitude)
-            mapView?.addAnnotation(coord, title: pkmn.pokemonId.toString().capitalizedString, type: .Pokemon, userData: pkmn)
+            mapView?.addAnnotation(coord, title: "Spawn Point", type: .Pokemon, userData: pkmn)
         }
         for fort in foundForts {
             let coord = CLLocationCoordinate2D(latitude: fort.latitude, longitude: fort.longitude)
