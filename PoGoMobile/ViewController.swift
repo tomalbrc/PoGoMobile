@@ -200,7 +200,7 @@ class ViewController: UIViewController {
         
         for pkmn in foundPokemons {
             let coord = CLLocationCoordinate2D(latitude: pkmn.latitude, longitude: pkmn.longitude)
-            mapView?.addAnnotation(coord, title: "Spawn Point", type: .Pokemon, userData: pkmn)
+            mapView?.addAnnotation(coord, title: "Pokémon", type: .Pokemon, userData: pkmn)
         }
         for fort in foundForts {
             let coord = CLLocationCoordinate2D(latitude: fort.latitude, longitude: fort.longitude)

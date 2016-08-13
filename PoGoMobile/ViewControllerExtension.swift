@@ -55,6 +55,8 @@ extension ViewController: PGoAuthDelegate, PGoApiDelegate {
             let r = response.subresponses.first as? Pogoprotos.Networking.Responses.FortSearchResponse
             if r!.result == .InCooldownPeriod {
                 usernameLbl?.text = "Fort still cooling down"
+            } else if r!.result == .InventoryFull {
+                usernameLbl?.text = "Inventory full. Got \(r!.experienceAwarded) EXP"
             } else if r!.result == .Success {
                 var str: String = ""
                 for item in r!.itemsAwarded {
@@ -78,7 +80,7 @@ extension ViewController: MKMapViewDelegate {
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
         if let annotation = annotation as? MapAnnotation {
             let lbl = UILabel()
-            lbl.font = UIFont.systemFontOfSize(9)
+            lbl.font = UIFont.systemFontOfSize(10)
             
             if let pokemon = annotation.userData as? Pogoprotos.Map.Pokemon.MapPokemon {
                 lbl.text = pokemon.pokemonId.toString().capitalizedString
@@ -89,20 +91,29 @@ extension ViewController: MKMapViewDelegate {
             
             let annotationView = MKAnnotationView()
             if annotation.type == .Fort {
+                
                 let btn = TAButton()
-                btn.frame = CGRectMake(0, 0, 50, 44)
+                btn.frame = CGRectMake(0, 0, 44, 44)
                 btn.setImage(UIImage(named: "runner"), forState: .Normal)
                 btn.backgroundColor = UIColor(red: 25/1.0, green: 150/1.0, blue: 235/1.0, alpha: 1.0)
                 btn.addTarget(self, action: #selector(walkToFort), forControlEvents: .TouchUpInside)
                 btn.userData = annotation
                 annotationView.leftCalloutAccessoryView = btn
+                annotationView.image = UIImage(named: "pokestop-button")
+                
             } else if annotation.type == .Pokemon {
                 
+                let pkmn = annotation.userData as! Pogoprotos.Map.Pokemon.MapPokemon
+                let pid = String(format: "%03d", pkmn.pokemonId.rawValue)
+                let data = NSData(contentsOfURL: NSURL(string: "http://serebii.net/pokemongo/pokemon/\(pid).png")!)
+                annotationView.image = UIImage(data: data!, scale: 1.5)
+                
             } else {
+                
                 let btn = UIButton(type: .DetailDisclosure)
                 annotationView.rightCalloutAccessoryView = btn
+                annotationView.image = UIImage(named: "crosshair-button")
             }
-            annotationView.image = UIImage(named: "smile")
             annotationView.canShowCallout = true
             annotationView.detailCalloutAccessoryView = lbl
             
