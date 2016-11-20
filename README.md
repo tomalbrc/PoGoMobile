@@ -17,4 +17,4 @@ Needs some work work
 ## Current Screenshot:
 ---
 
-![image](https://github.com/tomalbrc/PoGoMobile/raw/master/screenshot.jpg =400x)
+![image](screenshot.jpg =400x)
